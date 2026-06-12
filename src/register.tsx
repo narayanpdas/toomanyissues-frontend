@@ -4,6 +4,7 @@ import { Field } from "@chakra-ui/react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { apiFetch } from "./api";
 
 // Reusing your categories for the preferences selector
 const CATEGORIES = {
@@ -83,7 +84,7 @@ const toggleLabel = (category: string, label: string) => {
         throw new Error("Please fix the errors above before submitting.");
       }
 
-      const response = await fetch('/api/auth/register', {
+      const response = await apiFetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name,email, username, password, preferences,primaryLanguages }),

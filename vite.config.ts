@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', // Spring Boot port
+        target: 'https://toomanyissues.duckdns.org', // Spring Boot port
         changeOrigin: true,
       },
     },
