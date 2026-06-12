@@ -14,22 +14,25 @@ export default function SignIn() {
   const navigate = useNavigate();
 
 
-  const loginMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiFetch('/api/auth/login', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      if (!response.ok) throw new Error("Invalid credentials");
-      return response.json();
-    },
-    onSuccess: (data) => {
+const loginMutation = useMutation({
+  mutationFn: async () => {
+    const data = await apiFetch('/api/auth/login', { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    return data;
+  },
+  onSuccess: (data) => {
 
-      login(data.jwtToken,data.refreshToken,data.role);
-      navigate('/');
-    },
-  });
+    login(data.jwtToken, data.refreshToken, data.role);
+    navigate('/');
+  },
+  onError: (error) => {
+   
+    console.error("Login failed:", error);
+  }
+});
 
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();

@@ -79,22 +79,15 @@ const toggleLabel = (category: string, label: string) => {
 
   const registerMutation = useMutation({
     mutationFn: async () => {
-      // Prevent submission if there are known errors
       if (emailError || usernameError || password.length < 8) {
         throw new Error("Please fix the errors above before submitting.");
       }
-
       const response = await apiFetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name,email, username, password, preferences,primaryLanguages }),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || "Registration failed. Please try again.");
-      }
-      return response.json();
+      return response;
     },
     onSuccess: () => {
       // On success, automatically redirect to the login page
