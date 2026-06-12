@@ -1,4 +1,4 @@
-import {Container, SegmentGroup, VStack } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import type { SpringPage,GithubIssues } from "../Interfaces/DTOs";
 import { IssueCard } from "./IssueCard";
 
@@ -8,8 +8,7 @@ interface IssuesDisplayProps {
   onPageChange: (newPage: number) => void;
   onOpenPreview: (issueId: string) => void;
 }
-function IssuesContainer({ pageData, onPageChange, onOpenPreview }: IssuesDisplayProps){
-    var items = [];
+function IssuesContainer({ pageData, onOpenPreview }: IssuesDisplayProps){
 return(
         <VStack gap={4} w={"full"} align="stretch" scrollBehavior={"smooth"}>
         {pageData.content.map((issue) => (

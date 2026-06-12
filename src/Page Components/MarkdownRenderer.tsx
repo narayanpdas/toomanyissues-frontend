@@ -42,18 +42,17 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
           ol: (props) => <List.Root as="ol" pl={6} mb={4} {...props} />,
           li: (props) => <List.Item {...props} />,
 
-          // Blockquotes (> quote)
-          blockquote: (props) => (
-            <Box 
-              as="blockquote" 
-              borderLeftWidth="4px" 
-              borderColor="gray.500" 
-              pl={4} 
-              py={1} 
-              my={4} 
-              color="gray.400" 
+          blockquote: ({ node, ...props }: any) => (
+            <Box
+              as="blockquote"
+              borderLeftWidth="4px"
+              borderColor="gray.500"
+              pl={4}
+              py={1}
+              my={4}
+              color="gray.400"
               bg="whiteAlpha.50"
-              {...props} 
+              {...props}
             />
           ),
         }}

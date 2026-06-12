@@ -37,7 +37,7 @@ function getContrastColor(hexColor:string) {
   return yiq >= 128 ? 'black' : 'white';
 }
 export function IssueCard({ GithubIssue, onClickPreview }: IssueCardProps) {
-    const primaryLanguageColorMapper={
+    const primaryLanguageColorMapper:Record<string, string>={
     "python":"#3572A5",
     "c":"#555555",
     "c++":"#89465a",

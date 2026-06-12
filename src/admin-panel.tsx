@@ -1,13 +1,12 @@
 import { 
   Box, Container, VStack, Heading, Text, Flex, 
-  SimpleGrid, Badge, Spinner, Center, HStack, Separator, Tabs
+  SimpleGrid, Badge, HStack, Tabs
 } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "./api";
-import { FiUsers, FiServer, FiAlertCircle, FiActivity, FiPlay, FiPause } from "react-icons/fi"; // npm install react-icons
+import { FiUsers, FiAlertCircle, FiActivity, FiPlay, FiPause } from "react-icons/fi"; // npm install react-icons
 
-interface ServerStatus { ramUsage: string; dbStorage: string; uptime: string; }
 interface UserStatus { totalUsers: number; byLanguage: Record<string, number>; byLabel: Record<string, number>; }
 interface IssueStatus { 
   total: number; fresh: number; old: number;

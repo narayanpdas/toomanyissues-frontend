@@ -50,7 +50,7 @@ function getContrastColor(hexColor: string) {
 }
 
 export default function IssuePreview({ issue, isOpen, onClose }: IssuePreviewProps) {
-      const primaryLanguageColorMapper={
+      const primaryLanguageColorMapper:Record<string, string>={
     "python":"#3572A5",
     "c":"#555555",
     "c++":"#89465a",

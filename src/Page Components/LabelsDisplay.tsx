@@ -1,4 +1,4 @@
-import { Box, Container, VStack, SegmentGroup, Text, Flex, Heading } from "@chakra-ui/react";
+import { Box, Container, VStack, SegmentGroup, Text, Flex } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react"; // Adjust path to your snippets
 import { useState } from "react";
 

@@ -1,7 +1,5 @@
 import { Box, Input, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-// Make sure you have an icon library installed, or remove the icon if not!
-// e.g., npm install react-icons
 import { FiSearch } from "react-icons/fi"; 
 
 interface SearchBarProps {
@@ -10,14 +8,12 @@ interface SearchBarProps {
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
   const [inputValue, setInputValue] = useState("");
-
-  // The Debounce Logic
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       onSearch(inputValue);
-    }, 500); // Waits 500ms after the last keystroke
+    }, 500); 
 
-    return () => clearTimeout(timeoutId); // Cleans up if they keep typing
+    return () => clearTimeout(timeoutId);
   }, [inputValue, onSearch]);
 
   return (
@@ -36,11 +32,15 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           <FiSearch size={20} />
         </Box>
         <Input 
-          variant="unstyled" // Removes default Chakra borders so it fits in the Flex box
           placeholder="Search issues by title or description..."
           bg="transparent"
+          border="none"
+          outline="none"
+          boxShadow="none"
+          _focus={{ border: "none", boxShadow: "none", outline: "none" }}
           color="white"
           py={3}
+          px={0}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           _placeholder={{ color: "gray.500" }}
