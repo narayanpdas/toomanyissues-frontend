@@ -63,7 +63,7 @@ export function IssueCard({ GithubIssue, onClickPreview }: IssueCardProps) {
           <Text fontSize="sm" color="#ffeedd" fontWeight="medium">
             {GithubIssue.repoName} • {getTimeAgo(GithubIssue?.createdAtGithub || "")}
           </Text>
-          <Text fontSize="lg" fontWeight="bold" color="#fff3ec" textOverflow={"clip"}>
+          <Text wordBreak="break-word" whiteSpace="normal" fontSize="lg" fontWeight="bold" color="#fff3ec" textOverflow={"clip"}>
             {GithubIssue.title}
           </Text>
             <Box fontSize="lg"
