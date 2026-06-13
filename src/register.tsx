@@ -1,12 +1,13 @@
-import { Box, Container, VStack, Heading, Text, Input, Flex, Link as ChakraLink } from "@chakra-ui/react";
+import { Box, Container, VStack, Heading, Text, Input, Flex, Image, Link as ChakraLink, Grid, GridItem, Center } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react"; 
 import { Field } from "@chakra-ui/react"; 
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { apiFetch } from "./api";
+import { apiFetch } from "./auth/api";
+import { toaster } from "./Page Components/toaster";
+import logoUrl from '../public/logo.png';
 
-// Reusing your categories for the preferences selector
 const CATEGORIES = {
   PrimaryLanguage: ["python","c","c++","ruby","javascript","go", "java", "rust"],
   Type: ["bug", "feature", "documentation","ui/ux","refactor","testing","performance", "security","accessibility","build"],
@@ -26,7 +27,8 @@ export default function Register() {
   const [emailError, setEmailError] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-const toggleLabel = (category: string, label: string) => {
+
+  const toggleLabel = (category: string, label: string) => {
     if (category === "PrimaryLanguage") {
       setPrimaryLanguages((prev) =>
         prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
@@ -37,11 +39,11 @@ const toggleLabel = (category: string, label: string) => {
       );
     }
   };
+
   const checkEmail = async () => {
     if (!email) return;
     try {
       const res = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
-      console.log("Email check response:", res);
       if (res.status === 409 || !res.ok) {
         setEmailError("This email is already registered.");
       } else {
@@ -55,10 +57,7 @@ const toggleLabel = (category: string, label: string) => {
   const checkUsername = async () => {
     if (!username) return;
     try {
-      // Adjust this URL to match your Spring Boot backend endpoint!
       const res = await fetch(`/api/auth/check-username?username=${encodeURIComponent(username)}`);
-      console.log("Username check response:", res);
-
       if (res.status === 409 || !res.ok) {
         setUsernameError("This username is already taken.");
       } else {
@@ -85,19 +84,23 @@ const toggleLabel = (category: string, label: string) => {
       const response = await apiFetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name,email, username, password, preferences,primaryLanguages }),
+        body: JSON.stringify({ name, email, username, password, preferences, primaryLanguages }),
       });
       return response;
     },
     onSuccess: () => {
-      // On success, automatically redirect to the login page
+        toaster.create({
+          title: "Registration Successful",
+          description: "Your account has been created. Please sign in.",
+          type: "success",
+          meta: { closable: true }
+        });
       navigate('/login');
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (password.length < 8) {
       setPasswordError("Password must be at least 8 characters long.");
       return;
@@ -106,50 +109,57 @@ const toggleLabel = (category: string, label: string) => {
   };
 
   return (
-    <Container maxW="container.md" py={10}>
+<Box h="100vh" overflowY="auto" w="full" bg="#0f0e17">
+    <Container maxW="container.lg" py={10}>
       <Box bg="#1a1614" p={8} borderRadius="2xl" borderWidth="1px" borderColor="whiteAlpha.100" shadow="2xl">
         <VStack gap={6} align="stretch">
-          
-          <Box textAlign="center" mb={2}>
-            <Heading size="2xl" color="white" mb={2}>Create an Account</Heading>
-            <Text color="gray.400">Set up your profile and choose your preferences.</Text>
-          </Box>
+          <Flex direction="column" align="center" mb={2} gap={3}>
+            <Image src={logoUrl} alt="Too Many Issues Logo" boxSize="56px" borderRadius="md" />
+            <Heading size="lg" color="white" letterSpacing="tight">
+              Create an Account
+            </Heading>
+            <Text color="gray.400" fontSize="sm">
+              Set up your profile and choose your preferences.
+            </Text>
+          </Flex>
 
           <form onSubmit={handleSubmit}>
-            <VStack gap={5} align="stretch">
-              
-                <Field.Root required>
-                <Field.Label color="white">Display Name</Field.Label>
-                <Input 
-                  type="text" 
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. first last" 
-                  bg="blackAlpha.400" 
-                  borderColor="gray.600"
-                  color="white"
-                  _focus={{ borderColor: "#f25f4c", boxShadow: "none" }}
-                  _placeholder={{ color: "gray.500" }}
-                />
-              </Field.Root>
-               <Flex gap={4} direction={{ base: "column", md: "row" }}>
-                <Box flex="1">
+            <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={10}>
+              <GridItem>
+                <VStack gap={5} align="stretch">
+                  <Field.Root required>
+                    <Field.Label color="white">Name</Field.Label>
+                    <Input 
+                      type="text" 
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="e.g. firstname lastname" 
+                      bg="blackAlpha.400" 
+                      borderColor="gray.600"
+                      color="white"
+                      _focus={{ borderColor: "#f25f4c", boxShadow: "none" }}
+                      _placeholder={{ color: "gray.500" }}
+                    />
+                  </Field.Root>
+
                   <Field.Root required invalid={!!emailError}>
                     <Field.Label color="white">Email Address</Field.Label>
                     <Input 
                       type="email" 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      placeholder="e.g. user@example.com"
                       onBlur={checkEmail} 
                       bg="blackAlpha.400" 
                       borderColor={emailError ? "red.400" : "gray.600"}
                       color="white"
                       _focus={{ borderColor: "#f25f4c", boxShadow: "none" }}
+                      _placeholder={{ color: "gray.500" }}
+
                     />
                     {emailError && <Text color="red.400" fontSize="sm" mt={1}>{emailError}</Text>}
                   </Field.Root>
-                </Box>
-                <Box flex="1">
+
                   <Field.Root required invalid={!!usernameError}>
                     <Field.Label color="white">Username</Field.Label>
                     <Input 
@@ -164,88 +174,87 @@ const toggleLabel = (category: string, label: string) => {
                     />
                     {usernameError && <Text color="red.400" fontSize="sm" mt={1}>{usernameError}</Text>}
                   </Field.Root>
-                </Box>
-              </Flex>
 
-              <Field.Root required invalid={!!passwordError}>
-                <Field.Label color="white">Password</Field.Label>
-                <Input 
-                  type="password" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onBlur={validatePassword}
-                  bg="blackAlpha.400" 
-                  borderColor={passwordError ? "red.400" : "gray.600"}
-                  color="white"
-                  _focus={{ borderColor: "#f25f4c", boxShadow: "none" }}
-                />
-                {passwordError && <Text color="red.400" fontSize="sm" mt={1}>{passwordError}</Text>}
-              </Field.Root>
-              <Box mt={4} p={5} bg="blackAlpha.300" borderRadius="xl" borderWidth="1px" borderColor="whiteAlpha.100">
-                <Text color="white" fontWeight="bold" mb={1}>Issue Preferences</Text>
-                <Text color="gray.400" fontSize="sm" mb={4}>
-                  Select your stack so we can recommend the best issues for you.
-                </Text>
-                
-                <VStack align="stretch" gap={4}>
-                  {Object.entries(CATEGORIES).map(([categoryName, labels]) => (
-                    <Box key={categoryName}>
-                      <Text fontSize="xs" color="gray.500" textTransform="uppercase" mb={2} fontWeight="bold">
-                        {categoryName === "PrimaryLanguage" ? "Primary Languages" : categoryName}
-                      </Text>
-                      <Flex wrap="wrap" gap={2}>
-                        {labels.map((label) => {
-                          const isSelected = categoryName === "PrimaryLanguage" 
-                            ? primaryLanguages.includes(label) 
-                            : preferences.includes(label);
-                          return (
-                            <Button
-                              key={label}
-                              type="button" // Prevents clicking this from submitting the form!
-                              size="sm"
-                              variant={isSelected ? "solid" : "outline"}
-                              bg={isSelected ? "#f25f4c" : "transparent"}
-                              color={isSelected ? "white" : "gray.300"}
-                              borderColor={isSelected ? "#f25f4c" : "gray.600"}
-                              _hover={{
-                                bg: isSelected ? "#d94b3a" : "whiteAlpha.200",
-                              }}
-                              onClick={() => toggleLabel(categoryName, label)}
-                            >
-                              {label}
-                            </Button>
-                          );
-                        })}
-                      </Flex>
-                    </Box>
-                  ))}
+                  <Field.Root required invalid={!!passwordError}>
+                    <Field.Label color="white">Password</Field.Label>
+                    <Input 
+                      type="password" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      onBlur={validatePassword}
+                      bg="blackAlpha.400" 
+                      borderColor={passwordError ? "red.400" : "gray.600"}
+                      color="white"
+                      _focus={{ borderColor: "#f25f4c", boxShadow: "none" }}
+                    />
+                    {passwordError && <Text color="red.400" fontSize="sm" mt={1}>{passwordError}</Text>}
+                  </Field.Root>
                 </VStack>
-              </Box>
-
-              {/* MAIN ERROR MESSAGE */}
+              </GridItem>
+              <GridItem>
+                <Box p={5} bg="blackAlpha.300" borderRadius="xl" borderWidth="1px" borderColor="whiteAlpha.100" h="full">
+                  <Text color="white" fontWeight="bold" mb={1}>Issue Preferences</Text>
+                  <Text color="gray.400" fontSize="sm" mb={6}>
+                    Choose atleast 1 primaryLanguage and 2 types from the categories below, you can change these later in your profile settings.
+                  </Text>
+                  <VStack align="stretch" gap={6}>
+                    {Object.entries(CATEGORIES).map(([categoryName, labels]) => (
+                      <Box key={categoryName}>
+                        <Text fontSize="xs" color="gray.500" textTransform="uppercase" mb={3} fontWeight="bold">
+                          {categoryName === "PrimaryLanguage" ? "Primary Languages" : categoryName}
+                        </Text>
+                        <Flex wrap="wrap" gap={2}>
+                          {labels.map((label) => {
+                            const isSelected = categoryName === "PrimaryLanguage" 
+                              ? primaryLanguages.includes(label) 
+                              : preferences.includes(label);
+                            return (
+                              <Button
+                                key={label}
+                                type="button" 
+                                size="sm"
+                                variant={isSelected ? "solid" : "outline"}
+                                bg={isSelected ? "#f25f4c" : "transparent"}
+                                color={isSelected ? "white" : "gray.300"}
+                                borderColor={isSelected ? "#f25f4c" : "gray.600"}
+                                _hover={{ bg: isSelected ? "#d94b3a" : "whiteAlpha.200" }}
+                                onClick={() => toggleLabel(categoryName, label)}
+                              >
+                                {label}
+                              </Button>
+                            );
+                          })}
+                        </Flex>
+                      </Box>
+                    ))}
+                  </VStack>
+                </Box>
+              </GridItem>
+            </Grid>
+            <Box mt={8}>
               {registerMutation.isError && (
-                <Text color="red.400" fontSize="sm" textAlign="center">
+                <Text color="red.400" fontSize="sm" textAlign="center" mb={3}>
                   {registerMutation.error.message}
                 </Text>
               )}
+              <Center>
               <Button 
                 type="submit" 
-                w="full" 
                 bg="#f25f4c" 
                 color="white" 
                 size="lg" 
-                mt={4}
                 loading={registerMutation.isPending}
                 disabled={!!emailError || !!usernameError || !!passwordError}
                 _hover={{ bg: "#d94b3a" }}
               >
                 Create Account
               </Button>
-
-            </VStack>
+              </Center>
+            </Box>
           </form>
 
-          <Flex justify="center" mt={2}>
+
+          <Flex justify="center" mt={4}>
             <Text color="gray.400" fontSize="sm">
               Already have an account?{' '}
               <ChakraLink asChild color="#f25f4c" fontWeight="medium">
@@ -257,5 +266,6 @@ const toggleLabel = (category: string, label: string) => {
         </VStack>
       </Box>
     </Container>
+    </Box>
   );
 }

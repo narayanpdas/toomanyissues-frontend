@@ -1,12 +1,13 @@
-import { Box, Container, VStack, Heading, Text, Input, Flex, Link as ChakraLink } from "@chakra-ui/react";
+import { Box, Container, VStack, Heading, Text, Input,Image, Flex, Link as ChakraLink } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react"; 
 import { Field } from  "@chakra-ui/react"; 
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./auth/AuthContext";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { apiFetch } from "./api";
-
+import { apiFetch } from "./auth/api";
+import { toaster } from "./Page Components/toaster";
+import logoUrl from '../public/logo.png';
 export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,11 +27,22 @@ const loginMutation = useMutation({
   onSuccess: (data) => {
 
     login(data.jwtToken, data.refreshToken, data.role);
+    toaster.create({
+      title: "Login Successful",
+      description: `Welcome back, ${username}!`,
+      type: "success",
+      meta: { closable: true }
+    });
     navigate('/');
   },
   onError: (error) => {
-   
     console.error("Login failed:", error);
+    toaster.create({
+      title: "Login Failed",
+      description: "Please check your credentials and try again.",
+      type: "error",
+      meta: { closable: true }
+    });
   }
 });
 
@@ -43,6 +55,12 @@ const loginMutation = useMutation({
     <Container w="md" py={20}>
       <Box bg="#1a1614" p={8} borderRadius="2xl" borderWidth="1px" borderColor="whiteAlpha.100" shadow="2xl">
         <VStack gap={6} align="stretch">
+          <Flex direction="column" align="center" mb={6} gap={3}>
+          <Image src={logoUrl} alt="Too Many Issues Logo" boxSize="48px" borderRadius="md" />
+            <Heading size="lg" color="white" letterSpacing="tight">
+              Too Many Issues
+            </Heading>
+          </Flex>
           <Box textAlign="center" mb={4}>
             <Heading size="2xl" color="white" mb={2}>Welcome back</Heading>
             <Text color="gray.400">Sign in to claim bounties and track issues.</Text>
@@ -76,10 +94,9 @@ const loginMutation = useMutation({
     _focus={{ borderColor: "#f25f4c", boxShadow: "none" }}
   />
 </Field.Root>
-
               {loginMutation.isError && (
                 <Text color="red.400" fontSize="sm">
-                  {loginMutation.error.message}
+                  Invalid username or password. Please try again.
                 </Text>
               )}
               <Button 

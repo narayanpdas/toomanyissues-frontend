@@ -4,7 +4,7 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiFetch } from "./api";
+import { apiFetch } from "./auth/api";
 import { FiUsers, FiAlertCircle, FiActivity, FiPlay, FiPause } from "react-icons/fi"; // npm install react-icons
 
 interface UserStatus { totalUsers: number; byLanguage: Record<string, number>; byLabel: Record<string, number>; }
@@ -15,7 +15,7 @@ interface IssueStatus {
   topLabelMetrics: Record<string, number>;
 }
 interface GithubStatus { remainingPoints: number; resetTime: string; }
-interface Scheduler {id:string; name: string; description: string; progress: number; total:number ; count:number ; status: 'RUNNING' | 'PAUSED' | 'IDLE'; }
+interface Scheduler {id:string; name: string; pointsCostInCurrentCycle:number; totalPointsCost:number;description: string; progress: number; total:number ; count:number ; status: 'RUNNING' | 'PAUSED' | 'IDLE'; }
 
 export default function AdminPanel() {
   const queryClient = useQueryClient();
@@ -79,7 +79,6 @@ return (
           
           <Box>
             <Heading size="2xl" color="white" mb={2}>System Control Center</Heading>
-            {/* <Text color="gray.400" fontSize="lg">Monitor server health, user activity, and manage scrapers all in one place.</Text> */}
           </Box>
 
           <Box bg="#1a1614" borderRadius="2xl" borderWidth="1px" borderColor="whiteAlpha.100" shadow="2xl" overflow="hidden">
@@ -195,14 +194,17 @@ return (
                       const isRunning = scheduler.status === 'RUNNING';
 
                       return (
-                        <Box key={scheduler.name} bg="blackAlpha.300" p={5} borderRadius="xl" borderWidth="1px" borderColor="whiteAlpha.100">
+                        <Box key={scheduler.id} bg="blackAlpha.300" p={5} borderRadius="xl" borderWidth="1px" borderColor="whiteAlpha.100">
                           <Flex justify="space-between" align="center" mb={4}>
                             <Box>
                               <HStack mb={1}>
                                 <Heading size="md" color="white">{scheduler.name}</Heading>
                                 <Badge colorScheme={isRunning ? "green" : "yellow"}>{scheduler.status}</Badge>
                               </HStack>
-                              <Text color="gray.400" fontSize="sm">{scheduler.description}</Text>
+                              {/* <Text color="gray.400" fontSize="sm">{scheduler.description}</Text> */}
+                              <Text color="gray.200" fontSize="sm">{scheduler.pointsCostInCurrentCycle} Points Used in the Last Run</Text>
+                              <Text color="gray.200" fontSize="sm">{scheduler.totalPointsCost} Total Points Used</Text>
+
                             </Box>
                             
                             {/* Controls */}

@@ -12,12 +12,14 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import PaginationControls from "./Page Components/PaginationControls";
 import SignIn from "./login";
 import MainLayout from "./MainLayout";
-import { apiFetch } from "./api";
+import { apiFetch } from "./auth/api";
 import About from "./about";
 import Register from "./register";
 import Profile from "./profile";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./auth/AuthContext";
 import SearchBar from "./Page Components/Searchbar";
+import { toaster, ToasterProvider } from "./Page Components/toaster";
+import ProtectedRoute from "./Page Components/ProtectedRoute";
 
 function App() {
   const [activeSort, setActiveSort] = useState("Recent");
@@ -31,11 +33,7 @@ function App() {
 
   const handleSortChange = (newSort: string) => {
     if (newSort === "Recommended") {
-      if (!isAuthenticated) { 
-        window.alert("Please sign in to access recommended issues!");
-        window.location.href = "/login";
-        return; 
-      }
+      handleSignInRequest();
     }
     setActiveSort(newSort);
     setActiveLabels([]); 
@@ -64,8 +62,19 @@ function App() {
     if (isAuthenticated) {
       return true;
     } else {
-      window.alert("Please sign in to access recommended issues!");
-      window.location.href = "/login";
+      console.warn("User attempted to access recommended issues without authentication.");
+      toaster.create({
+        title: "Authentication Required",
+        description: "Please sign in to access recommended issues filtering.",
+        type: "error", 
+        action: {
+          label: "Sign In",
+          onClick: () => {
+            window.location.href = "/login";
+          }
+        },
+        meta: { closable: true }
+      });
       return false;
     }
   };
@@ -90,6 +99,8 @@ function App() {
   return (
     <BrowserRouter>
       <Box h="100vh" w="100vw" p={0} backgroundColor={"#0f0e17"} overflow="hidden">
+      <ToasterProvider />
+
         <Routes>
           <Route path="/login" element={<SignIn />} />
           <Route path="/register" element={<Register />} />
@@ -205,8 +216,12 @@ function App() {
                     <About />
                   </Box>} 
                 />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/admin" element={<AdminPanel />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/profile" element={<Profile />} />
+                </Route>
+                <Route element={<ProtectedRoute requireAdmin={true} />}>
+                  <Route path="/admin" element={<AdminPanel />} />
+                </Route>
                 <Route path="*" element={<Box color="white"><div>Not Found</div></Box>} />
               </Route>
         </Routes>

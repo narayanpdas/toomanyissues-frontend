@@ -62,7 +62,6 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
           headers.set('Authorization', `Bearer ${newJwt}`);
           processQueue(null, newJwt);
 
-          // Retry the original request
           response = await fetch(fullUrl, { ...options, headers });
 
         } catch (err) {
