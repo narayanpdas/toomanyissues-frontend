@@ -41,7 +41,7 @@ export default function About() {
           </Text>
           <VStack align="stretch" gap={3} pl={4}>
             <Text><b>• Personalized Recommendations:</b> Unlike static lists, the recommendation engine tailors issues specifically to your stack and experience level.</Text>
-            <Text><b>• Advanced Filtering:</b> Instantly pivot between languages, bug fixes, enhancements, and paid bounties without writing complex GitHub search queries or google searches.</Text>
+            <Text><b>• Quick Filtering:</b> Instantly pivot between languages, bug fixes, enhancements, and other categories without writing complex GitHub search queries or google searches.</Text>
             <Text><b>• Everything at a glance:</b> Get a quick overview of all the relevant information of an issue without having to navigate through multiple pages.</Text>
 
           </VStack>
@@ -49,14 +49,13 @@ export default function About() {
 
         <Box bg="#1a1614" p={8} borderRadius="2xl" borderWidth="1px" borderColor="whiteAlpha.100" shadow="xl">
           <Heading size="lg" color="white" mb={4}>
-            About Me
+            About Me and Why the Project ?
           </Heading>
           <Text lineHeight="tall">
-            I built this tool because I was facing a similar problem. 
-            I wanted to find more active repository based on the number of issues but found myself spending more 
-            time juggling through github's UI and less time actually searching.
-            I built this application to solve that bottleneck for myself, and hopefully, 
-            for thousands of other developers looking to make their mark on the open-source community.
+            I’ve always wanted to get more involved in open source, but I hit a wall right at the starting line. 
+            Whenever I tried to find an issue that matched my tech stack, I found myself spending more time wrestling with GitHub's search UI than actually looking at code. 
+            I built toomanyissues to eliminate that bottleneck. 
+            Even if I'm not the most active open-source contributor myself, my goal is to help thousands of other developers bypass the search fatigue so they can easily make their mark on the community.
           </Text>
         </Box>
 
@@ -87,14 +86,14 @@ export default function About() {
         {/* Section 5: Connect With Me */}
         <Box bg="#1a1614" p={8} borderRadius="2xl" borderWidth="1px" borderColor="whiteAlpha.100" shadow="xl">
           <Heading size="lg" color="white" mb={4}>
-            Connect with Me
+            Let's Connect 
           </Heading>
           <Text mb={6}>
-            Got feedback, feature requests, or just want to chat about tech? I'd love to hear from you.
+            Got feedback, feature requests, or just want to chat about tech? I'd love to hear any suggestions from you.
           </Text>
           <Flex gap={4} wrap="wrap">
             <ChakraLink 
-              href="https://github.com/narayandabu" 
+              href="https://github.com/narayanpdas" 
               target="_blank" 
               color="#f25f4c" 
               fontWeight="bold"
@@ -104,17 +103,7 @@ export default function About() {
             </ChakraLink>
             <Text color="gray.600">•</Text>
             <ChakraLink 
-              href="https://linkedin.com/in/YOUR_USERNAME" 
-              target="_blank" 
-              color="#f25f4c" 
-              fontWeight="bold"
-              _hover={{ color: "#d94b3a", textDecoration: "underline" }}
-            >
-              LinkedIn
-            </ChakraLink>
-            <Text color="gray.600">•</Text>
-            <ChakraLink 
-              href="mailto:your.email@example.com" 
+              href="mailto:narayanpdas2004+toomanyissues@gmail.com?subject=[Too Many Issues] Feedback & Support" 
               color="#f25f4c" 
               fontWeight="bold"
               _hover={{ color: "#d94b3a", textDecoration: "underline" }}
