@@ -43,9 +43,13 @@ function App() {
   };
 
   const handleApplyFilters = (newLanguage: string[], newLabels: string[]) => {
-    setActiveLanguages(newLanguage);
-    setActiveLabels(newLabels);
-    setCurrentPage(0);
+    const languagesChanged = JSON.stringify(activeLanguages) !== JSON.stringify(newLanguage);
+    const labelsChanged = JSON.stringify(activeLabels) !== JSON.stringify(newLabels);
+    if (languagesChanged || labelsChanged) {
+      setActiveLanguages(newLanguage);
+      setActiveLabels(newLabels);
+      setCurrentPage(0); 
+    }
   };
 
   const handlePageChange = (newPageNumber: number) => {
@@ -139,8 +143,10 @@ function App() {
                         {/* STATIC HEADER: Search Bar */}
                         <Box pt={4} pb={4} bg="#0f0e17" zIndex={10}>
                           <SearchBar onSearch={(query) => {
-                            setSearchQuery(query);
-                            setCurrentPage(0); 
+                            if (query !== searchQuery) {
+                                  setSearchQuery(query);
+                                  setCurrentPage(0); 
+                                }
                           }} />
                         </Box>
 

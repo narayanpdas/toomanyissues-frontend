@@ -1,6 +1,5 @@
 import { HStack, Text } from "@chakra-ui/react";
-import { Button } from "@chakra-ui/react"; // Adjust path to your snippets
-
+import { Button } from "@chakra-ui/react"; 
 interface PaginationProps {
   currentPage: number; 
   totalPages: number;
