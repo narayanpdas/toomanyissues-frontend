@@ -6,9 +6,9 @@ import IssuesContainer from "./Page Components/IssuesContainer";
 import IssuePreview from "./Page Components/IssuePreview";
 import AdminPanel from "./admin-panel";
 import type { GithubIssues, SpringPage } from "./Interfaces/DTOs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"; 
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom"; 
 import PaginationControls from "./Page Components/PaginationControls";
 import SignIn from "./login";
 import MainLayout from "./MainLayout";
@@ -20,6 +20,18 @@ import { useAuth } from "./auth/AuthContext";
 import SearchBar from "./Page Components/Searchbar";
 import { toaster, ToasterProvider } from "./Page Components/toaster";
 import ProtectedRoute from "./Page Components/ProtectedRoute";
+
+function SharedLinkHandler({ onFetchSharedIssue }: { onFetchSharedIssue: (id: string) => void }) {
+  const { issueId } = useParams();
+  
+  useEffect(() => {
+    if (issueId) {
+      onFetchSharedIssue(issueId);
+    }
+  }, [issueId]);
+
+  return null;
+}
 
 function App() {
   const [activeSort, setActiveSort] = useState("Recent");
@@ -41,7 +53,22 @@ function App() {
     setSearchQuery("");
     setCurrentPage(0);
   };
-
+const handleOpenSharedIssue = async (issueId: string) => {
+    try {
+      // Fetch the single issue from your new backend endpoint
+      const response = await apiFetch(`/api/issues/shared/${issueId}`);
+      setSelectedIssue(response as GithubIssues);
+      setIsPreviewOpen(true);
+    } catch (error) {
+      toaster.create({
+        title: "Issue Not Found",
+        description: "This shared link might be invalid or expired.",
+        type: "error",
+      });
+      // Optionally redirect them back to the home page if it fails
+      // window.history.pushState({}, '', '/');
+    }
+  };
   const handleApplyFilters = (newLanguage: string[], newLabels: string[]) => {
     const languagesChanged = JSON.stringify(activeLanguages) !== JSON.stringify(newLanguage);
     const labelsChanged = JSON.stringify(activeLabels) !== JSON.stringify(newLabels);
@@ -99,18 +126,8 @@ function App() {
     },
     staleTime: 1000 * 60 * 3, 
   });
-
-  return (
-    <BrowserRouter>
-      <Box h="100vh" w="100vw" p={0} backgroundColor={"#0f0e17"} overflow="hidden">
-      <ToasterProvider />
-
-        <Routes>
-          <Route path="/login" element={<SignIn />} />
-          <Route path="/register" element={<Register />} />
-              <Route element={<MainLayout />}>
-                <Route path={"/"} element={
-                  <Flex flex="1" overflow="hidden" mt={4} px={4} gap={8} maxW="1600px" mx="auto" w="full">
+const dashboardContent = (
+    <Flex flex="1" overflow="hidden" mt={4} px={4} gap={8} maxW="1600px" mx="auto" w="full">
                       
                       {/* LEFT COLUMN: Labels */}
                       <Box
@@ -204,7 +221,23 @@ function App() {
                       />
 
                   </Flex>
-                }/>
+  );
+  return (
+    <BrowserRouter>
+      <Box h="100vh" w="100vw" p={0} backgroundColor={"#0f0e17"} overflow="hidden">
+      <ToasterProvider />
+
+        <Routes>
+          <Route path="/login" element={<SignIn />} />
+          <Route path="/register" element={<Register />} />
+              <Route element={<MainLayout />}>
+                <Route path={"/"} element={dashboardContent} />
+                  
+                <Route path="/shared/:issueId" element={<>
+                  <SharedLinkHandler onFetchSharedIssue={handleOpenSharedIssue} />
+                  {dashboardContent}
+                  </>
+                } />
                 <Route path="/home" element={<Navigate to="/" replace />} />
                 <Route path="/about" element={
                   <Box

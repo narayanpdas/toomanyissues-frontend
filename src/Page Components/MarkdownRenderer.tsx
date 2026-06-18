@@ -1,24 +1,56 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Box, Text, Heading, Link, Code, List } from '@chakra-ui/react';
-
+import { Box, Text,Image, Heading, Link, Code, List, DialogBackdrop, DialogContent, DialogCloseTrigger, DialogBody, DialogRoot, Button } from '@chakra-ui/react';
+import rehypeRaw from 'rehype-raw';
+import { useState } from 'react';
+import { IoMdCloseCircleOutline } from "react-icons/io";
 interface MarkdownRendererProps {
   content: string;
 }
 
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   return (
+    <>
     <Box 
       className="markdown-body" 
       color="gray.300" // Matches your dark theme body text
       fontSize="sm"
       lineHeight="tall"
+      css={{
+        '& img': {
+          maxWidth: '100%',
+          height: 'auto',
+          borderRadius: '8px',
+          marginTop: '16px',
+          marginBottom: '16px'
+        },
+        // '& pre': { overflowX: 'auto', padding: '16px', backgroundColor: '#1a1614', borderRadius: '8px' },
+        '& table': { display: 'block', overflowX: 'auto', whiteSpace: 'nowrap' }
+      }}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
         components={{
           // Map standard markdown tags to Chakra UI components
-          
+          // Intercept ALL <img> tags and raw HTML images
+          img: (props) => (
+              <Image 
+                src={props.src} 
+                alt={props.alt} 
+                cursor="zoom-in" // Changes mouse to a magnifying glass
+                onClick={() => setZoomedImage(props.src || null)}
+                maxWidth="100%"
+                height="auto"
+                borderRadius="md"
+                my={4}
+                borderWidth="1px"
+                borderColor="whiteAlpha.200"
+                transition="all 0.2s"
+                _hover={{ opacity: 0.8, borderColor: "#ffc0ad" }}
+              />
+            ),
           // Paragraphs
           p: (props) => <Text mb={4} {...props} />,
           
@@ -60,5 +92,55 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         {content}
       </ReactMarkdown>
     </Box>
+    <DialogRoot 
+        open={!!zoomedImage} 
+        onOpenChange={(e) => {
+          if (!e.open) setZoomedImage(null);
+        }} 
+        size="cover" // Takes up the whole screen
+        placement="center"
+      >
+        <DialogBackdrop bg="blackAlpha.800" backdropFilter="blur(10px)" zIndex={9998} />
+        <DialogContent 
+          bg="transparent" 
+          boxShadow="none" 
+          position="fixed"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          margin={0}
+          w="100vw"      // 1. ADD THIS: Force container to be 100% screen width
+          h="100vh"      // 2. ADD THIS: Force container to be 100% screen height
+          maxW="100vw"   // 3. OVERRIDE Chakra's default max-width restrictions
+          zIndex={9999}
+          onClick={() => setZoomedImage(null)}
+        >
+
+          {/* Close button positioned absolutely to the screen */}
+          <DialogCloseTrigger 
+            color="white" 
+            bg="blackAlpha.600" 
+            _hover={{ bg: "blackAlpha.800" }} 
+            position="absolute"
+top={4}       // Tweak these so it doesn't get cut off at the very edge
+            right={4}
+            zIndex={10000}
+          />
+          
+          <DialogBody display="flex" justifyContent="center" alignItems="center" p={0}>
+            {zoomedImage && (
+              <Image 
+                src={zoomedImage} 
+                maxW="100%" 
+                maxH="90vh" 
+                objectFit="contain" 
+                borderRadius="md" 
+                boxShadow="dark-lg"
+              />
+            )}
+          </DialogBody>
+        </DialogContent>
+      </DialogRoot>
+      </>
   );
 }
