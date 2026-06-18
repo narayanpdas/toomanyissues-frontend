@@ -16,6 +16,7 @@ import { useAuth } from "../auth/AuthContext";
 import { toaster } from "./toaster"; 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IoCloseOutline } from "react-icons/io5";
+import { apiFetch } from "../auth/api";
 
 function getTimeAgo(isoString: string) {
   const past = new Date(isoString);
@@ -99,7 +100,7 @@ export default function IssuePreview({ issue, isOpen, onClose }: IssuePreviewPro
     }
   }, [isSummarizing, summaryText]);
 
-  const handleSummarizeClick = async () => {
+  const handleSummarizeClick = async (node_id: string) => {
     // 1. AUTH CHECK: If not logged in, fire the teaser toast and stop!
     if (!isAuthenticated) {
       toaster.create({
@@ -123,11 +124,9 @@ export default function IssuePreview({ issue, isOpen, onClose }: IssuePreviewPro
     setDisplayedSummary("");
 
     try {
-      // TODO: Replace with your actual backend / cache-aside call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
       
-      const mockSummary = "### AI Summary\n\nThis issue addresses a race condition in the concurrent write mechanism. \n\n**Key Actions Needed:**\n- Update the storage contract test.\n- Ensure `snapshot-on-mismatch` accounts for edge cases during I/O operations.";
-      setSummaryText(mockSummary);
+      const response = await apiFetch(`/api/issues/summarize/${node_id}`);
+      setSummaryText(response.summary);
       
     } catch (error: any) {
       if (error?.status === 429) {
@@ -330,7 +329,7 @@ export default function IssuePreview({ issue, isOpen, onClose }: IssuePreviewPro
                 borderColor="#ffc0ad"
                 color="#ffc0ad"
                 _hover={{ bg: "whiteAlpha.100" }}
-                onClick={handleSummarizeClick}
+                onClick={() => handleSummarizeClick(issue?.githubIssueId)}
               >
                 ✨ Summarize Issue
               </Button>
