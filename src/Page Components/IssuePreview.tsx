@@ -188,15 +188,18 @@ export default function IssuePreview({ issue, isOpen, onClose }: IssuePreviewPro
                 {issue?.repoName} • {getTimeAgo(issue?.createdAtGithub || "")}
               </Button>
               <Button
+                position="absolute"
                 size="lg"
+                top={4}
+            right={1}
                 variant="ghost"
                 minW="auto"
                 color="gray.400"
                 _hover={{ bg: "whiteAlpha.200", color: "red.500" }}
                 onClick={handleClose}
                 borderRadius="md"
-                px={2}
-                mr={-14}
+                // px={2}
+                // mr={-14}
               >
                 <IoCloseOutline /> 
               </Button>
