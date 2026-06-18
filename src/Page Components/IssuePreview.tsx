@@ -6,7 +6,6 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
-  DialogCloseTrigger,
   DialogTitle,
 } from "@chakra-ui/react"; 
 import { Button } from "@chakra-ui/react";

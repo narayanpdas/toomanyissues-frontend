@@ -1,9 +1,8 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Box, Text,Image, Heading, Link, Code, List, DialogBackdrop, DialogContent, DialogCloseTrigger, DialogBody, DialogRoot, Button } from '@chakra-ui/react';
+import { Box, Text,Image, Heading, Link, Code, List, DialogBackdrop, DialogContent, DialogCloseTrigger, DialogBody, DialogRoot } from '@chakra-ui/react';
 import rehypeRaw from 'rehype-raw';
 import { useState } from 'react';
-import { IoMdCloseCircleOutline } from "react-icons/io";
 interface MarkdownRendererProps {
   content: string;
 }
