@@ -109,7 +109,6 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   if (!rawText) return null;
 
   try {
-    console.log(`API Response from ${endpoint}:`, rawText);
     return JSON.parse(rawText);
   } catch (error) {
     console.error(`CRITICAL: Failed to parse JSON from ${endpoint}.`, rawText);

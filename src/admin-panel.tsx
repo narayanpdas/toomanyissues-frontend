@@ -32,12 +32,12 @@ export default function AdminPanel() {
   const { data: scrapersData } = useQuery({
     queryKey: ['admin', 'schedulers'],
     queryFn: async () => {
-      console.log("Fetching schedulers and GitHub API status...");
+
 
       const schedulers = await apiFetch('/admin/schedulers/status') as Scheduler[];
       const github = await apiFetch('/admin/github-api/status') as GithubStatus;
 
-      console.log("Fetched Schedulers:", schedulers);
+
       return { schedulers, github };
     },
     refetchInterval: 10000, 

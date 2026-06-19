@@ -117,7 +117,6 @@ const handleOpenSharedIssue = async (issueId: string) => {
       const labelsParam = activeLabels.length > 0 ? `&labels=${activeLabels.join(',')}` : "";
       const langParam = activeLanguages.length > 0 ? `&primaryLanguages=${encodeURIComponent(activeLanguages.join(','))}` : "";
       const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : "";
-      console.log(`Fetching with params: ${labelsParam} ${langParam} ${searchParam}`);
       const basePath = activeSort === "Recommended" ? "/api/issues/recommended" : "/api/issues/recent";
       const response = await apiFetch(
          `${basePath}?filter=${activeSort.toLowerCase()}&page=${currentPage}${labelsParam}${langParam}${searchParam}`
