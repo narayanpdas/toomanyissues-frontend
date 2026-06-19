@@ -198,8 +198,6 @@ export default function IssuePreview({ issue, isOpen, onClose }: IssuePreviewPro
                 _hover={{ bg: "whiteAlpha.200", color: "red.500" }}
                 onClick={handleClose}
                 borderRadius="md"
-                // px={2}
-                // mr={-14}
               >
                 <IoCloseOutline /> 
               </Button>

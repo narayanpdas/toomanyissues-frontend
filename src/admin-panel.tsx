@@ -130,8 +130,8 @@ return (
                 <Tabs.Content value="issues">
                   <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
                     <StatCard title="Total Tracked Issues" value={issueData?.total || 0} />
-                    <StatCard title="Fresh (< 12h)" value={issueData?.fresh || 0} subtext="Recently found in github" />
-                    <StatCard title="Stale (> 12h)" value={issueData?.old || 0} subtext="Requires pruning" />
+                    <StatCard title="Fresh (< 24h)" value={issueData?.fresh || 0} subtext="Recently found in github" />
+                    <StatCard title="Stale (> 24h)" value={issueData?.old || 0} subtext="Requires pruning" />
                     <SimpleGrid columns={{ base: 1, md: 1 }} gap={6}>
                       <Box bg="blackAlpha.300"  p={6} borderRadius="xl" borderWidth="1px" borderColor="whiteAlpha.100">
                          <Text color="white" fontWeight="bold" mb={4}>Top Primary Languages</Text>
@@ -201,7 +201,7 @@ return (
                                 <Heading size="md" color="white">{scheduler.name}</Heading>
                                 <Badge colorScheme={isRunning ? "green" : "yellow"}>{scheduler.status}</Badge>
                               </HStack>
-                              {/* <Text color="gray.400" fontSize="sm">{scheduler.description}</Text> */}
+                              <Text color="gray.400" fontSize="sm">{scheduler.description}</Text>
                               <Text color="gray.200" fontSize="sm">{scheduler.pointsCostInCurrentCycle} Points Used in the Last Run</Text>
                               <Text color="gray.200" fontSize="sm">{scheduler.totalPointsCost} Total Points Used</Text>
 
