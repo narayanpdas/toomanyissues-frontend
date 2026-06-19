@@ -43,7 +43,7 @@ export default function Register() {
   const checkEmail = async () => {
     if (!email) return;
     try {
-      const res = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
+      const res = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}&t=${Date.now()}`);
       if (res.status === 409 || !res.ok) {
         setEmailError("This email is already registered.");
       } else {
@@ -57,7 +57,7 @@ export default function Register() {
   const checkUsername = async () => {
     if (!username) return;
     try {
-      const res = await fetch(`/api/auth/check-username?username=${encodeURIComponent(username)}`);
+      const res = await fetch(`/api/auth/check-username?username=${encodeURIComponent(username)}&t=${Date.now()}`);
       if (res.status === 409 || !res.ok) {
         setUsernameError("This username is already taken.");
       } else {
