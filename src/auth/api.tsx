@@ -101,6 +101,9 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
       }
       throw new Error(`API Error: ${response.status}`);
     }
+    else if(response.status === 409 && endpoint.includes('/api/auth/check-')) {
+      return response; 
+    }
     else {
       throw new Error(`API Error: ${response.status}`);
     }
