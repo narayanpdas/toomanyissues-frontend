@@ -44,13 +44,17 @@ export default function Register() {
     if (!email) return;
     try {
       const res = await apiFetch(`/api/auth/check-email?email=${encodeURIComponent(email)}&t=${Date.now()}`);
-      if (res.status === 409 || !res.ok) {
+      if (!res.exists) {
         setEmailError("This email is already registered.");
       } else {
         setEmailError(""); 
       }
-    } catch (e) {
-      console.error("Failed to check email", e);
+    } catch (e:any) {
+      if (e?.status === 409) {
+        setEmailError("This email is already registered.");
+      } else {
+        console.error("Failed to check email", e);
+      }
     }
   };
 
@@ -58,13 +62,17 @@ export default function Register() {
     if (!username) return;
     try {
       const res = await apiFetch(`/api/auth/check-username?username=${encodeURIComponent(username)}&t=${Date.now()}`);
-      if (res.status === 409 || !res.ok) {
+      if (!res.exists) {
         setUsernameError("This username is already taken.");
       } else {
         setUsernameError(""); 
       }
-    } catch (e) {
-      console.error("Failed to check username", e);
+    }catch (e: any) {
+      if (e?.status === 409) {
+        setUsernameError("This username is already taken.");
+      } else {
+        console.error("Failed to check username", e);
+      }
     }
   };
 
