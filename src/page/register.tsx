@@ -44,7 +44,7 @@ export default function Register() {
     if (!email) return;
     try {
       const res = await apiFetch(`/api/auth/check-email?email=${encodeURIComponent(email)}&t=${Date.now()}`);
-      if (!res.exists) {
+      if (res.exists) {
         setEmailError("This email is already registered.");
       } else {
         setEmailError(""); 
@@ -62,7 +62,7 @@ export default function Register() {
     if (!username) return;
     try {
       const res = await apiFetch(`/api/auth/check-username?username=${encodeURIComponent(username)}&t=${Date.now()}`);
-      if (!res.exists) {
+      if (res.exists) {
         setUsernameError("This username is already taken.");
       } else {
         setUsernameError(""); 
