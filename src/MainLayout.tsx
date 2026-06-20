@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom"; // <-- Add this import
+import { Outlet } from "react-router-dom";
 import { Flex } from "@chakra-ui/react";
 import NavBar from "./Page Components/navbar/navBar";
 import SystemBanner from "./Page Components/SystemBanner";
@@ -12,7 +12,7 @@ function MainLayout() {
         <SystemBanner 
           message={maintenanceMessage} 
           type="warning" 
-          isDismissible={false}
+          isDismissible={true}
         />
       )}
       <Outlet /> 

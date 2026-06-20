@@ -1,6 +1,7 @@
 import { Box, Flex, Text, IconButton, Center } from "@chakra-ui/react";
 import { useState } from "react";
 import { FiInfo, FiX } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 interface SystemBannerProps {
   message: string;
@@ -33,6 +34,9 @@ export default function SystemBanner({ message, type = "info", isDismissible = t
           <Box color={textColors[type]}><FiInfo /></Box>
           <Text  color={textColors[type]} fontSize="sm" fontWeight="medium">
             {message}
+            <Link to="/about" style={{ textDecoration: "underline", color: textColors[type] }}>
+              {" "} Contact me
+            </Link>
           </Text>
         </Flex>
         {isDismissible && (

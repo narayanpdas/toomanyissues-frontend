@@ -1,25 +1,20 @@
-import { Box, Center, Text, Flex, Spinner } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { Box } from "@chakra-ui/react";
 import './App.css';
-import LabelsDisplay from "./Page Components/LabelsDisplay";
-import IssuesContainer from "./Page Components/IssuesContainer";
-import IssuePreview from "./Page Components/IssuePreview";
 import AdminPanel from "./admin-panel";
-import type { GithubIssues, SpringPage } from "./Interfaces/DTOs";
+import type { GithubIssues } from "./Interfaces/DTOs";
 import { useEffect, useState } from "react";
-
-import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom"; 
-import PaginationControls from "./Page Components/PaginationControls";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom"; 
 import SignIn from "./login";
 import MainLayout from "./MainLayout";
 import { apiFetch } from "./auth/api";
 import About from "./about";
 import Register from "./register";
 import Profile from "./profile";
-import { useAuth } from "./auth/AuthContext";
-import SearchBar from "./Page Components/Searchbar";
+import Home from "./Home"; 
+import Issues from "./Issues"; 
 import { toaster, ToasterProvider } from "./Page Components/toaster";
 import ProtectedRoute from "./Page Components/ProtectedRoute";
+import IssuePreview from "./Page Components/IssuePreview";
 
 function SharedLinkHandler({ onFetchSharedIssue }: { onFetchSharedIssue: (id: string) => void }) {
   const { issueId } = useParams();
@@ -34,235 +29,80 @@ function SharedLinkHandler({ onFetchSharedIssue }: { onFetchSharedIssue: (id: st
 }
 
 function App() {
-  const [activeSort, setActiveSort] = useState("Recent");
-  const [activeLanguages, setActiveLanguages] = useState<string[]>([]);
-  const [activeLabels, setActiveLabels] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const { isAuthenticated } = useAuth();
-  const [selectedIssue, setSelectedIssue] = useState<GithubIssues | null>(null);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [sharedIssue, setSharedIssue] = useState<GithubIssues | null>(null);
+  const [isSharedOpen, setIsSharedOpen] = useState(false);
 
-  const handleSortChange = (newSort: string) => {
-    if (newSort === "Recommended") {
-      handleSignInRequest();
-    }
-    setActiveSort(newSort);
-    setActiveLabels([]); 
-    setActiveLanguages([]);
-    setSearchQuery("");
-    setCurrentPage(0);
-  };
-const handleOpenSharedIssue = async (issueId: string) => {
+  const handleOpenSharedIssue = async (issueId: string) => {
     try {
-      // Fetch the single issue from your new backend endpoint
       const response = await apiFetch(`/api/issues/shared/${issueId}`);
-      setSelectedIssue(response as GithubIssues);
-      setIsPreviewOpen(true);
+      setSharedIssue(response as GithubIssues);
+      setIsSharedOpen(true);
     } catch (error) {
       toaster.create({
         title: "Issue Not Found",
         description: "This shared link might be invalid or expired.",
         type: "error",
       });
-      // Optionally redirect them back to the home page if it fails
-      // window.history.pushState({}, '', '/');
-    }
-  };
-  const handleApplyFilters = (newLanguage: string[], newLabels: string[]) => {
-    const languagesChanged = JSON.stringify(activeLanguages) !== JSON.stringify(newLanguage);
-    const labelsChanged = JSON.stringify(activeLabels) !== JSON.stringify(newLabels);
-    if (languagesChanged || labelsChanged) {
-      setActiveLanguages(newLanguage);
-      setActiveLabels(newLabels);
-      setCurrentPage(0); 
     }
   };
 
-  const handlePageChange = (newPageNumber: number) => {
-    setCurrentPage(newPageNumber);
-  };
-
-  const handleOpenPreview = (issueId: string) => {
-    const found = pageData?.content.find((it) => it.githubIssueId === issueId) || null;
-    setSelectedIssue(found);
-    setIsPreviewOpen(true);
-  };
-
-  const handleSignInRequest = (): boolean => {
-    if (isAuthenticated) {
-      return true;
-    } else {
-      console.warn("User attempted to access recommended issues without authentication.");
-      toaster.create({
-        title: "Authentication Required",
-        description: "Please sign in to access recommended issues filtering.",
-        type: "error", 
-        action: {
-          label: "Sign In",
-          onClick: () => {
-            window.location.href = "/login";
-          }
-        },
-        meta: { closable: true }
-      });
-      return false;
-    }
-  };
-
-  const { data: pageData, isLoading } = useQuery({
-    queryKey: ['issues', activeSort, activeLanguages, activeLabels, searchQuery, currentPage, isAuthenticated],
-    enabled: activeSort === 'Recommended' ? !!localStorage.getItem('jwt') : true,
-    queryFn: async () => {
-      const labelsParam = activeLabels.length > 0 ? `&labels=${activeLabels.join(',')}` : "";
-      const langParam = activeLanguages.length > 0 ? `&primaryLanguages=${encodeURIComponent(activeLanguages.join(','))}` : "";
-      const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : "";
-      const basePath = activeSort === "Recommended" ? "/api/issues/recommended" : "/api/issues/recent";
-      const response = await apiFetch(
-         `${basePath}?filter=${activeSort.toLowerCase()}&page=${currentPage}${labelsParam}${langParam}${searchParam}`
-      );
-      return response as SpringPage<GithubIssues>;
-    },
-    staleTime: 1000 * 60 * 3, 
-  });
-const dashboardContent = (
-    <Flex flex="1" overflow="hidden" mt={4} px={4} gap={8} maxW="1600px" mx="auto" w="full">
-                      
-                      {/* LEFT COLUMN: Labels */}
-                      <Box
-                        w={{ base: "100%", md: "400px" }} 
-                        overflowY="auto"
-                        pr={2} 
-                        css={{
-                          '&::-webkit-scrollbar': { width: '4px' },
-                          '&::-webkit-scrollbar-track': { background: 'transparent' },
-                          '&::-webkit-scrollbar-thumb': { background: '#55423d', borderRadius: '8px' },
-                        }}
-                      >
-                        <LabelsDisplay
-                              activeSort={activeSort} 
-                              initialLabels={activeLabels}
-                              PrimaryLanguages={activeLanguages}
-                              onSortChange={handleSortChange}
-                              onApplyFilters={handleApplyFilters}
-                              onSignInRequest={handleSignInRequest}
-                        />
-                      </Box>
-                      
-                      {/* RIGHT COLUMN: Search + Issues Wrapper */}
-                      <Flex 
-                        flex="1" 
-                        direction="column" 
-                        pr={4}
-                        h="full"
-                      >
-                        {/* STATIC HEADER: Search Bar */}
-                        <Box pt={4} pb={4} bg="#0f0e17" zIndex={10}>
-                          <SearchBar onSearch={(query) => {
-                            if (query !== searchQuery) {
-                                  setSearchQuery(query);
-                                  setCurrentPage(0); 
-                                }
-                          }} />
-                        </Box>
-
-                        {/* SCROLLABLE AREA: Issues List */}
-                        <Box
-                          flex="1"
-                          overflowY="auto"
-                          pr={2}
-                          css={{
-                            '&::-webkit-scrollbar': { width: '8px' },
-                            '&::-webkit-scrollbar-track': { background: 'transparent' },
-                            '&::-webkit-scrollbar-thumb': { background: '#ffc0ad', borderRadius: '8px' },
-                            '&::-webkit-scrollbar-thumb:hover': { background: '#f7a890' },
-                          }}
-                        >
-                          {pageData?.content.length === 0 ? (
-                            <Center h="200px">
-                              <Box display="flex" gap={3} flexDirection="column" alignItems="center">
-                                <Text color="gray.400" fontWeight="medium">No issues found with the selected filters.</Text>
-                              </Box>
-                            </Center>
-                          ) : null}
-                          
-                          {isLoading || !pageData ? (
-                            <Center h="200px">
-                              <Box display="flex" gap={3} flexDirection="column" alignItems="center">
-                                <Spinner color="#ffc0ad" borderWidth="4px" />
-                                <Text color="gray.400" fontWeight="medium">Fetching issues...</Text>
-                              </Box>
-                            </Center>
-                          ) : (
-                            <>
-                              <IssuesContainer
-                                pageData={pageData}
-                                onPageChange={handlePageChange}
-                                onOpenPreview={handleOpenPreview}
-                              />
-                              <PaginationControls
-                                currentPage={pageData?.page.number}
-                                totalPages={pageData?.page.totalPages}
-                                onPageChange={handlePageChange}
-                              />
-                            </>
-                          )}
-                        </Box>
-                      </Flex>
-
-                      <IssuePreview
-                        issue={selectedIssue as GithubIssues}
-                        isOpen={isPreviewOpen}
-                        onClose={() => {
-                          setIsPreviewOpen(false);
-                          setTimeout(() => setSelectedIssue(null), 200);
-                        }}
-                      />
-
-                  </Flex>
-  );
   return (
     <BrowserRouter>
       <Box h="100vh" w="100vw" p={0} backgroundColor={"#0f0e17"} overflow="hidden">
-      <ToasterProvider />
+        <ToasterProvider />
 
         <Routes>
           <Route path="/login" element={<SignIn />} />
           <Route path="/register" element={<Register />} />
-              <Route element={<MainLayout />}>
-                <Route path={"/"} element={dashboardContent} />
-                  
-                <Route path="/shared/:issueId" element={<>
-                  <SharedLinkHandler onFetchSharedIssue={handleOpenSharedIssue} />
-                  {dashboardContent}
-                  </>
-                } />
-                <Route path="/home" element={<Navigate to="/" replace />} />
-                <Route path="/about" element={
-                  <Box
-                    flex="1"
-                    overflowY="auto" 
-                    h="full"         
-                    px={4}
-                    css={{
-                      '&::-webkit-scrollbar': { width: '8px' },
-                      '&::-webkit-scrollbar-track': { background: 'transparent' },
-                      '&::-webkit-scrollbar-thumb': { background: '#ffc0ad', borderRadius: '8px' },
-                      '&::-webkit-scrollbar-thumb:hover': { background: '#f7a890' },
-                    }}
-                  >
-                    <About />
-                  </Box>} 
-                />
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/profile" element={<Profile />} />
-                </Route>
-                <Route element={<ProtectedRoute requireAdmin={true} />}>
-                  <Route path="/admin" element={<AdminPanel />} />
-                </Route>
-                <Route path="*" element={<Box color="white"><div>Not Found</div></Box>} />
-              </Route>
+          
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/issues" element={<Issues />} />
+            
+            <Route path="/shared/:issueId" element={
+              <>
+                <SharedLinkHandler onFetchSharedIssue={handleOpenSharedIssue} />
+                <Issues />
+              </>
+            } />
+            
+            <Route path="/about" element={
+              <Box
+                flex="1"
+                overflowY="auto" 
+                h="full"         
+                px={4}
+                css={{
+                  '&::-webkit-scrollbar': { width: '8px' },
+                  '&::-webkit-scrollbar-track': { background: 'transparent' },
+                  '&::-webkit-scrollbar-thumb': { background: '#ffc0ad', borderRadius: '8px' },
+                  '&::-webkit-scrollbar-thumb:hover': { background: '#f7a890' },
+                }}
+              >
+                <About />
+              </Box>
+            } />
+            
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<Profile />} />
+            </Route>
+            
+            <Route element={<ProtectedRoute requireAdmin={true} />}>
+              <Route path="/admin" element={<AdminPanel />} />
+            </Route>
+            
+            <Route path="*" element={<Box color="white"><div>Not Found</div></Box>} />
+          </Route>
         </Routes>
+        <IssuePreview
+          issue={sharedIssue as GithubIssues}
+          isOpen={isSharedOpen}
+          onClose={() => {
+            setIsSharedOpen(false);
+            setTimeout(() => setSharedIssue(null), 200);
+          }}
+        />
       </Box>
     </BrowserRouter>
   );

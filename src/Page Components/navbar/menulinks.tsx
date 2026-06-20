@@ -2,6 +2,7 @@ import { HStack, VStack, Link } from "@chakra-ui/react";
 import { CgProfile } from "react-icons/cg";
 const links = [
   { name: "Home", href: "/home" },
+  {name:"Issues", href: "/issues"},
   { name: "About", href: "/about" },
   {name: "Admin", href: "/admin"},
   { name: "Profile", href: "/profile" }
