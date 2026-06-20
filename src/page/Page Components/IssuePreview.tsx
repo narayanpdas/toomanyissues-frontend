@@ -10,13 +10,13 @@ import {
 } from "@chakra-ui/react"; 
 import { Button } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import type { GithubIssues } from "../Interfaces/DTOs";
+import type { GithubIssues } from "../../Interfaces/DTOs";
 import MarkdownRenderer from "./MarkdownRenderer";
-import { useAuth } from "../auth/AuthContext"; 
+import { useAuth } from "../../auth/AuthContext"; 
 import { toaster } from "./toaster"; 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IoCloseOutline } from "react-icons/io5";
-import { apiFetch } from "../auth/api";
+import { apiFetch } from "../../auth/api";
 
 function getTimeAgo(isoString: string) {
   const past = new Date(isoString);

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "../../auth/AuthContext";
 import { toaster } from "./toaster";
 import { Button, Center, Heading, VStack,Text } from "@chakra-ui/react";
 import { FiLock } from "react-icons/fi";

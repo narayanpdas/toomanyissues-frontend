@@ -1,20 +1,22 @@
 import { Box } from "@chakra-ui/react";
 import './App.css';
-import AdminPanel from "./admin-panel";
+import AdminPanel from "./page/admin-panel";
 import type { GithubIssues } from "./Interfaces/DTOs";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom"; 
-import SignIn from "./login";
-import MainLayout from "./MainLayout";
+import SignIn from "./page/login";
+import MainLayout from "./page/MainLayout";
 import { apiFetch } from "./auth/api";
-import About from "./about";
-import Register from "./register";
-import Profile from "./profile";
-import Home from "./Home"; 
-import Issues from "./Issues"; 
-import { toaster, ToasterProvider } from "./Page Components/toaster";
-import ProtectedRoute from "./Page Components/ProtectedRoute";
-import IssuePreview from "./Page Components/IssuePreview";
+import About from "./page/about";
+import Register from "./page/register";
+import Profile from "./page/profile";
+import Home from "./page/Home"; 
+import Issues from "./page/Issues"; 
+import { toaster, ToasterProvider } from "./page/Page Components/toaster";
+import ProtectedRoute from "./page/Page Components/ProtectedRoute";
+import IssuePreview from "./page/Page Components/IssuePreview";
+import Architecture from "./page/Architecture";
+import Roadmap from "./page/Roadmap";
 
 function SharedLinkHandler({ onFetchSharedIssue }: { onFetchSharedIssue: (id: string) => void }) {
   const { issueId } = useParams();
@@ -59,7 +61,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/issues" element={<Issues />} />
-            
+            <Route path="/architecture" element={<Architecture />} />
+            <Route path="/roadmap" element={<Roadmap/>}/>
             <Route path="/shared/:issueId" element={
               <>
                 <SharedLinkHandler onFetchSharedIssue={handleOpenSharedIssue} />

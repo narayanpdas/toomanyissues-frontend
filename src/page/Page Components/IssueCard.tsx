@@ -1,5 +1,5 @@
 import { Box, Flex, VStack, HStack, Text } from "@chakra-ui/react";
-import type { GithubIssues } from "../Interfaces/DTOs";
+import type { GithubIssues } from "../../Interfaces/DTOs";
 
 interface IssueCardProps {
   GithubIssue: GithubIssues;

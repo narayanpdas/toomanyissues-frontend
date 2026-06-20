@@ -7,7 +7,7 @@ import { Field } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { apiFetch } from "./auth/api"; 
+import { apiFetch } from "../auth/api"; 
 
 const CATEGORIES = {
   PrimaryLanguage: ["python", "c", "c++", "ruby", "javascript", "go", "java", "rust"],

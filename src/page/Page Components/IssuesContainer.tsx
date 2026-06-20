@@ -1,5 +1,5 @@
 import { VStack } from "@chakra-ui/react";
-import type { SpringPage,GithubIssues } from "../Interfaces/DTOs";
+import type { SpringPage,GithubIssues } from "../../Interfaces/DTOs";
 import { IssueCard } from "./IssueCard";
 
 

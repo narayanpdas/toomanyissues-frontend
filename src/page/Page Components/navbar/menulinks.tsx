@@ -4,6 +4,8 @@ const links = [
   { name: "Home", href: "/home" },
   {name:"Issues", href: "/issues"},
   { name: "About", href: "/about" },
+  {name: "Architecture", href: "/architecture"},
+  {name:"What's Next?",href:"/roadmap"},
   {name: "Admin", href: "/admin"},
   { name: "Profile", href: "/profile" }
 ];
@@ -14,7 +16,6 @@ const MenuLinks = ({ isMobile = false }) => {
   return (
     <LinkComponent gap={isMobile ? 4 : 8} align="center"> 
       {links.map((link) => (
-        // Only show Admin link if user is an admin
         (link.name !== "Admin" || role === "ADMIN") && (
         <Link
           key={link.name}

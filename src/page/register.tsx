@@ -4,9 +4,9 @@ import { Field } from "@chakra-ui/react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { apiFetch } from "./auth/api";
+import { apiFetch } from "../auth/api";
 import { toaster } from "./Page Components/toaster";
-import logoUrl from '../public/logo.png';
+import logoUrl from '../../public/logo.png';
 
 const CATEGORIES = {
   PrimaryLanguage: ["python","c","c++","ruby","javascript","go", "java", "rust"],

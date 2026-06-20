@@ -6,10 +6,10 @@ import SearchBar from "./Page Components/Searchbar";
 import IssuesContainer from "./Page Components/IssuesContainer";
 import PaginationControls from "./Page Components/PaginationControls";
 import IssuePreview from "./Page Components/IssuePreview";
-import { apiFetch } from "./auth/api";
-import { useAuth } from "./auth/AuthContext";
+import { apiFetch } from "../auth/api";
+import { useAuth } from "../auth/AuthContext";
 import { toaster } from "./Page Components/toaster";
-import type { GithubIssues, SpringPage } from "./Interfaces/DTOs";
+import type { GithubIssues, SpringPage } from "../Interfaces/DTOs";
 
 export default function Issues() {
   const [activeSort, setActiveSort] = useState("Recent");

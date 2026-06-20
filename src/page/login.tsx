@@ -3,11 +3,11 @@ import { Button } from "@chakra-ui/react";
 import { Field } from  "@chakra-ui/react"; 
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "./auth/AuthContext";
+import { useAuth } from "../auth/AuthContext";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { apiFetch } from "./auth/api";
+import { apiFetch } from "../auth/api";
 import { toaster } from "./Page Components/toaster";
-import logoUrl from '../public/logo.png';
+import logoUrl from '../../public/logo.png';
 export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
