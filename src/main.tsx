@@ -8,13 +8,14 @@ import { AuthProvider } from './auth/AuthContext.tsx'
 import { Analytics } from "@vercel/analytics/react"
 
 const queryClient = new QueryClient()
+const shouldTrack = localStorage.getItem('disable_analytics') !== 'true';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
     <ChakraProvider value={defaultSystem}>
       <App />
-      <Analytics />
+      {shouldTrack && <Analytics />}
     </ChakraProvider>
     </AuthProvider>
     </QueryClientProvider>
