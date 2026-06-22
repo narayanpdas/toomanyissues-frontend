@@ -13,7 +13,7 @@ onApplyFilters: (language: string[], labels: string[]) => void;
 }
 
 const CATEGORIES = {
-  PrimaryLanguage: ["python","c","c++","c#","ruby","javascript","go", "java", "rust"],
+  PrimaryLanguage: ["python","c","c++","c#","ruby","javascript","go","golang", "java", "rust","typescript"],
   Type: ["bug", "feature", "documentation","ui/ux","refactor","testing","performance", "security","accessibility","build"],
   Others: ["good first issue","help wanted", "bounty"]
 };
