@@ -190,7 +190,7 @@ return (
                    
                     {scrapersData?.schedulers?.map((scheduler) => {
                       const percentage = Math.round((scheduler.progress / scheduler.total) * 100) || 0;
-                      const isRunning = (scheduler.status === 'RUNNING'||'IDLE');
+                      const isRunning = (scheduler.status === 'RUNNING'|| scheduler.status === 'IDLE');
                       return (
                         <Box key={scheduler.id} bg="blackAlpha.300" p={5} borderRadius="xl" borderWidth="1px" borderColor="whiteAlpha.100">
                           <Flex justify="space-between" align="center" mb={4}>
