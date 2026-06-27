@@ -93,7 +93,6 @@ return (
               <Box p={8}>
 
 
-                {/* TAB 2: USERS */}
                 <Tabs.Content value="users">
                   <SimpleGrid columns={{ base: 1, md: 3 }} gap={6} mb={8}>
                     <StatCard title="Total Active Users" value={userData?.totalUsers || 0} />
@@ -191,8 +190,7 @@ return (
                    
                     {scrapersData?.schedulers?.map((scheduler) => {
                       const percentage = Math.round((scheduler.progress / scheduler.total) * 100) || 0;
-                      const isRunning = scheduler.status === 'RUNNING';
-
+                      const isRunning = (scheduler.status === 'RUNNING'||'IDLE');
                       return (
                         <Box key={scheduler.id} bg="blackAlpha.300" p={5} borderRadius="xl" borderWidth="1px" borderColor="whiteAlpha.100">
                           <Flex justify="space-between" align="center" mb={4}>
@@ -206,8 +204,7 @@ return (
                               <Text color="gray.200" fontSize="sm">{scheduler.totalPointsCost} Total Points Used</Text>
 
                             </Box>
-                            
-                            {/* Controls */}
+                          
                             <HStack gap={3}>
                               <Button 
                                 size="sm" 
@@ -223,8 +220,6 @@ return (
                               </Button>
                             </HStack>
                           </Flex>
-
-                          {/* Custom Progress Bar */}
                           <Box w="full" bg="whiteAlpha.100" h="8px" borderRadius="full" overflow="hidden" mb={2}>
                             <Box w={`${percentage}%`} bg="#f25f4c" h="full" transition="width 0.3s ease" />
                           </Box>
